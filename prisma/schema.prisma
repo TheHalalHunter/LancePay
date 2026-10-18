@@ -118,6 +118,7 @@ model User {
   bankStatementLines                BankStatementLine[]
   manualPaymentsReconciled          ManualPayment[]                    @relation("ManualPaymentReconciler")
   invoiceFxLocks                    InvoiceFxLock[]
+  pushSubscriptions                 PushSubscription[]
 }
 
 model KycApplication {
@@ -2175,4 +2176,17 @@ model DistributedJobLock {
   updatedAt           DateTime  @updatedAt
 
   @@index([expiresAt])
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId])
 }
